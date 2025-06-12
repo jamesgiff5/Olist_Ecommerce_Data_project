@@ -10,18 +10,17 @@ This project analyzes Brazil's e-commerce landscape using the public Olist datas
 ## 📦 Data Source
 
 The Olist dataset is available on [Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) with a 10/10 quality rating. While it includes many tables, this project focuses on just three: customer, order, and item-level data from a major Brazilian e-commerce marketplace.  
+
 ![Entity Relationship Diagram](assets\olist_entity_relationship_diagram.png)
 ## 💻 Tools Used
 
-- **PostgreSQL**: Used for data cleaning and transformations.  
-- **SQL (in VS Code)**: Wrote and executed queries to generate insights.  
+- **PostgreSQL (in VS Code)**: Used to write and run SQL queries for analysis.
 - **Tableau Public**: Built the final dashboard with calculated fields, maps, tooltips, and KPI cards.  
-- **Excel**: Used for minor prep and exporting CSV results from SQL.
 
 ## 🧮 Key Questions & Analysis
 
 ### 1. Monthly Revenue Trend
-How have monthly sales and order volume changed over time?
+> **How have monthly sales and order volume changed over time?**
 - Visualized monthly revenue by state from 2017–2018.
 - Identified strong seasonality with peaks during holiday months.
 ```sql
@@ -38,8 +37,11 @@ WHERE o.order_status = 'delivered'
 GROUP BY 1, 2
 ORDER BY 1, 2;
 ```
+[📄 View CSV Output](sql_results_csv\monthly_revenue_2017_2018.csv)
+
 
 ### 2. Revenue by State
+> **Which Brazilian states generate the most revenue?**
 - Created both a bar chart and a gradient-filled map of revenue by Brazilian state.
 - Used BRL and USD in tooltips.
 ```sql
@@ -55,7 +57,11 @@ WHERE o.order_status = 'delivered'
 GROUP BY c.customer_state
 ORDER BY total_revenue DESC;
 ```
+[📄 View CSV Output](sql_results_csv\revenue_by_state.csv)
+
+
 ### 3. Repeat Purchase Rate by State
+> **How many customers are making repeat purchases?**
 - Calculated % of customers who placed more than one order.
 - Compared state-level loyalty trends using a horizontal bar chart.
 ```sql
@@ -80,7 +86,11 @@ FROM (
 GROUP BY sub.customer_state
 ORDER BY repeat_rate_pct DESC;
 ```
+[📄 View CSV Output](sql_results_csv\repeat_rate_by_state.csv)
+
+
 ### 4. Delivery Time by State
+> ***What’s the average delivery time, and are we meeting delivery expectations?**
 - Analyzed average delivery time (in days) per state.
 - Added average lines and gradient formatting to identify delays.
 ```sql
@@ -97,9 +107,13 @@ WHERE o.order_status = 'delivered'
 GROUP BY c.customer_state
 ORDER BY avg_delivery_days DESC;
 ```
+[📄 View CSV Output](sql_results_csv\delivery_by_state.csv)
+
+
 ### 5. Freight Cost vs Product Price
+> **Are there any red flags in freight costs or order size trends?**
 - Built a scatterplot showing the relationship between product price and freight cost per state.
-- Added a trendline and tooltip fields showing BRL and USD conversions.
+- Added an efficiency ceiling to call out states where freight cost is over 20% of the average product price. 
 ```sql
 SELECT 
   c.customer_state,
@@ -114,9 +128,12 @@ WHERE o.order_status = 'delivered'
 GROUP BY c.customer_state
 ORDER BY freight_pct_of_price DESC;
 ```
+[📄 View CSV Output](sql_results_csv\freight_vs_price_by_state.csv)
+
+
 ### 6. One-Time vs Repeat Customers
+> **What percent of our customers are repeat buyers?**
 - Pie chart showing customer breakdown: ~97% one-time, ~3% repeat.
-- Reinforced via KPI cards.
 ```sql
 SELECT 
   CASE 
@@ -134,12 +151,19 @@ FROM (
 ) sub
 GROUP BY customer_type;
 ```
+[📄 View CSV Output](sql_results_csv\repeat_vs_onetime.csv)
+
+
 ### 7. KPI Banner
-Key performance indicators displayed as a dashboard header:
-- Total Revenue (BRL)
+
+A high-level summary of key business metrics to quickly assess marketplace performance:
+
+- Total Revenue (BRL & USD)
 - Total Orders
-- Avg Delivery Time (days)
+- Total Unique Customers
 - Repeat Purchase Rate (%)
+- Avg Delivery Time (days)
+- Avg Freight Cost Per Order
 
 ## 🔧 Challenges & Lessons Learned
 
@@ -148,21 +172,7 @@ Key performance indicators displayed as a dashboard header:
 - Created custom calculated fields for tooltips and currency conversion.
 - Designed layout containers in Tableau for a clean, mobile-responsive dashboard.
 
-## 📈 Key Features
-- KPI Banner (Revenue, Orders, Repeat Rate, Delivery Time)
-- State-by-State Revenue & Repeat Purchase Visualization
-- Freight vs. Product Price Efficiency Scatterplot
-- Time-Series Revenue Trend
 
-## 🛠️ Tools Used
-- SQL (PostgreSQL) for data transformation
-- Tableau Public for visualization
-- Excel for staging and data exports
-
-## 📂 Project Files
-- SQL scripts (queries used for analysis)
-- Screenshots of dashboards
-- Cleaned CSV exports (optional)
 
 ## ✍️ Author
 **James Gifford**  

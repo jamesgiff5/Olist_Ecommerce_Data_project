@@ -1,180 +1,122 @@
-# Olist Brazil E-Commerce Dashboard (2017–2018)
+# Brazil E-Commerce Performance Dashboard (2017–2018)
 
-📊 **Interactive Tableau Dashboard**: [View Live Dashboard](https://public.tableau.com/app/profile/james.gifford/viz/OlistEcommerceDataProject/OlistBrazilE-CommerceData20172018?publish=yes)
+📊 **Interactive Tableau Dashboard**: [View Live Dashboard](https://public.tableau.com/views/OlistEcommerceDataProject/BrazilE-CommercePerformanceDashboard20172018?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link)
 
-[![Tableau Dashboard Preview](assets/tableau_dashboard_preview.png)](https://public.tableau.com/app/profile/james.gifford/viz/OlistEcommerceDataProject/OlistBrazilE-CommerceData20172018?publish=yes)
+[![Tableau Dashboard Preview](assets/tableau_dashboard_preview.png)](https://public.tableau.com/views/OlistEcommerceDataProject/BrazilE-CommercePerformanceDashboard20172018?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link)
+## 🧠 Executive Summary
 
+- São Paulo accounts for approximately 37% of total revenue and has the most efficient logistics with the lowest freight percentage.
+- Just 3% of customers make repeat purchases, highlighting a potential retention issue despite fast delivery.
+- The weighted average delivery time is 13 days, consistently faster than the estimated delivery window.
+- Freight costs in remote states like Roraima (RR) average 27.8% of product value, exceeding the 20% threshold used to identify logistical concerns.
 ## 🔍 Overview
-This project analyzes Brazil's e-commerce landscape using the public Olist dataset. I focused on customer behavior, revenue patterns, logistics efficiency, and repeat purchase trends to uncover insights from nearly 100,000 orders. The project was also a way for me to practice SQL, data cleaning, and building professional dashboards in Tableau.
+
+This project analyzes Brazil's e-commerce activity using public data from the Olist marketplace. The goal was to uncover insights into customer behavior, revenue performance, logistics trends, and repeat purchasing. I used SQL and Tableau to simulate the workflow of a real-world business intelligence project.
+
+## 🗂️ Folder Structure
+
+```
+Olist_Ecommerce_Data_project/
+├─ project_data/       # Raw data files from Kaggle
+├─ sql_queries/        # All SQL queries used for analysis
+├─ sql_results/        # CSV outputs used to build Tableau visuals
+├─ assets/             # Dashboard screenshots and diagrams
+└─ README.md
+```
 
 ## 📦 Data Source
 
-The Olist dataset is available on [Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) with a 10/10 quality rating. While it includes many tables, this project focuses on just three: customer, order, and item-level data from a major Brazilian e-commerce marketplace.  
+The Olist dataset is available on [Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce). It includes customer, order, and item-level data. This project focuses on the core commerce tables only. Below is an Entity Relationship Diagram for the 3 tables used in this project:
 
-![Entity Relationship Diagram](assets\olist_entity_relationship_diagram.png)
+![Entity Relationship Diagram](assets/olist_entity_relationship_diagram.png)
+
 ## 💻 Tools Used
 
-- **PostgreSQL (in VS Code)**: Used to write and run SQL queries for analysis.
-- **Tableau Public**: Built the final dashboard with calculated fields, maps, tooltips, and KPI cards.  
+- **PostgreSQL** (via VS Code): Wrote and ran SQL queries for all calculations.
+- **Tableau Public**: Built the dashboard with calculated fields, maps, and KPIs.
 
 ## 🧮 Key Questions & Analysis
 
-### 1. Monthly Revenue Trend
-> **How have monthly sales and order volume changed over time?**
-- Visualized monthly revenue by state from 2017–2018.
-- Identified strong seasonality with peaks during holiday months.
-```sql
-SELECT 
-  DATE_TRUNC('month', o.order_purchase_timestamp)::date AS order_month,
-  c.customer_state,
-  COUNT(DISTINCT o.order_id) AS total_orders,
-  SUM(oi.price + oi.freight_value) AS total_revenue
-FROM orders o
-JOIN order_items oi ON o.order_id = oi.order_id
-JOIN customers c ON o.customer_id = c.customer_id
-WHERE o.order_status = 'delivered'
-  AND o.order_purchase_timestamp >= '2017-01-01'
-GROUP BY 1, 2
-ORDER BY 1, 2;
-```
-[📄 View CSV Output](sql_results_csv\monthly_revenue_2017_2018.csv)
+### 📈 1. How Have Monthly Sales Changed Over Time?
 
 
-### 2. Revenue by State
-> **Which Brazilian states generate the most revenue?**
-- Created both a bar chart and a gradient-filled map of revenue by Brazilian state.
-- Used BRL and USD in tooltips.
-```sql
-SELECT 
-  c.customer_state,
-  COUNT(DISTINCT o.order_id) AS total_orders,
-  ROUND(SUM(oi.price + oi.freight_value), 2) AS total_revenue
-FROM orders o
-JOIN customers c ON o.customer_id = c.customer_id
-JOIN order_items oi ON o.order_id = oi.order_id
-WHERE o.order_status = 'delivered'
-  AND o.order_purchase_timestamp >= '2017-01-01'
-GROUP BY c.customer_state
-ORDER BY total_revenue DESC;
-```
-[📄 View CSV Output](sql_results_csv\revenue_by_state.csv)
+- Visualized monthly revenue by state from 2017–2018 using a line chart.
+- Identified clear seasonality with revenue peaking in November and December, likely due to holiday shopping (Black Friday and Christmas).
+- A noticeable dip in early 2018 suggests either post-holiday slowdowns or broader demand shifts.
+- Filtering by state reveals that while São Paulo (SP) consistently drives the largest share of revenue, seasonal patterns are echoed across other top-performing states, suggesting nationwide consumer trends.
 
 
-### 3. Repeat Purchase Rate by State
-> **How many customers are making repeat purchases?**
-- Calculated % of customers who placed more than one order.
-- Compared state-level loyalty trends using a horizontal bar chart.
-```sql
-SELECT 
-  sub.customer_state,
-  COUNT(DISTINCT CASE WHEN sub.order_count = 1 THEN sub.customer_unique_id END) AS one_time,
-  COUNT(DISTINCT CASE WHEN sub.order_count > 1 THEN sub.customer_unique_id END) AS repeat,
-  COUNT(DISTINCT sub.customer_unique_id) AS total_customers,
-  ROUND(100.0 * COUNT(DISTINCT CASE WHEN sub.order_count > 1 THEN sub.customer_unique_id END) /
-        COUNT(DISTINCT sub.customer_unique_id), 2) AS repeat_rate_pct
-FROM (
-  SELECT 
-    c.customer_unique_id, 
-    c.customer_state, 
-    COUNT(o.order_id) AS order_count
-  FROM orders o
-  JOIN customers c ON o.customer_id = c.customer_id
-  WHERE o.order_status = 'delivered'
-    AND o.order_purchase_timestamp >= '2017-01-01'
-  GROUP BY c.customer_unique_id, c.customer_state
-) sub
-GROUP BY sub.customer_state
-ORDER BY repeat_rate_pct DESC;
-```
-[📄 View CSV Output](sql_results_csv\repeat_rate_by_state.csv)
+[🧾 View SQL Query](sql_queries/monthly_revenue_2017-2018.sql)  
+[📄 View CSV Output](sql_results/monthly_revenue_2017_2018.csv)
+
+### 🗺️ 2. Which States Generate the Most Revenue?
 
 
-### 4. Delivery Time by State
-> ***What’s the average delivery time, and are we meeting delivery expectations?**
-- Analyzed average delivery time (in days) per state.
-- Added average lines and gradient formatting to identify delays.
-```sql
-SELECT 
-  c.customer_state,
-  COUNT(o.order_id) AS delivered_orders,
-  ROUND(AVG(EXTRACT(DAY FROM o.order_delivered_customer_date - o.order_purchase_timestamp)), 2) AS avg_delivery_days,
-  ROUND(AVG(EXTRACT(DAY FROM o.order_estimated_delivery_date - o.order_delivered_customer_date)), 2) AS avg_days_early_or_late
-FROM orders o
-JOIN customers c ON o.customer_id = c.customer_id
-WHERE o.order_status = 'delivered'
-  AND o.order_purchase_timestamp >= '2017-01-01'
-  AND o.order_delivered_customer_date IS NOT NULL
-GROUP BY c.customer_state
-ORDER BY avg_delivery_days DESC;
-```
-[📄 View CSV Output](sql_results_csv\delivery_by_state.csv)
+- Created a bar chart and a Brazil map to visualize state-level revenue, with BRL as the base currency and USD conversions added to tooltips for context.
+- **São Paulo (SP)** clearly leads with the highest total revenue, reflecting its economic dominance and dense customer base.
+- The next highest states are **Rio de Janeiro (RJ)** and **Minas Gerais (MG)**, though both generate significantly less revenue than SP.
+- This highlights the importance of SP as a core market and suggests that scaling efforts in RJ and MG could yield strong returns due to their already high baseline activity.
+- This state-level view enables quick comparison and helps prioritize regions for marketing, logistics, or customer retention strategies.
+
+[🧾 View SQL Query](sql_queries/revenue_by_state.sql)  
+[📄 View CSV Output](sql_results/revenue_by_state.csv)
+
+### 🔁 3. What Percent of Our Customers Are Repeat Buyers?
+
+- Calculated the percentage of customers who placed more than one order, broken down by state.
+- Found that only ~3% of customers made repeat purchases.
+- *Note: The dataset covers a limited window (Jan 2017–Aug 2018), which may underestimate long-term retention.*
+
+[🧾 View SQL Query](sql_queries/repeat_rate_by_state.sql)  
+[📄 View CSV Output](sql_results/repeat_rate_by_state.csv)
+
+### ⏱️ 4. What’s the Average Delivery Time, and Are We Meeting Delivery Expectations?
+
+- Measured the average number of days from purchase to delivery for each state.
+- Compared actual delivery times to the estimated delivery dates provided with each order.
+- Results show that **every state had an average delivery time earlier than expected**, meaning the company consistently exceeded delivery expectations.
+- For example, states like São Paulo (SP) had the fastest delivery times (~9 days), while remote regions like Roraima (RR) averaged closer to 30 days — yet still beat the estimated delivery date by over 15 days.
+- Detailed comparisons are visible via tooltips on the dashboard’s bar chart.
+
+[🧾 View SQL Query](sql_queries/delivery_time_by_state.sql)  
+[📄 View CSV Output](sql_results/delivery_by_state.csv)
+
+### 🚚 5. Are There Any Red Flags in Freight Costs or Order Size Trends?
+
+- Built a scatterplot comparing the **average product price** vs. **average freight cost** by state.
+- Calculated **freight as a percentage of product price** to normalize differences in order value across regions.
+- Introduced a visual **efficiency ceiling at 20%**, meaning any state with freight costs regularly exceeding 20% of product price is flagged as potentially inefficient.
+- This threshold helps quickly identify regions where logistics may be eroding margins or affecting customer satisfaction.
+- For example, remote states like Roraima (RR) and Acre (AC) exceed the threshold, reflecting high delivery challenges, while São Paulo (SP) and Rio de Janeiro (RJ) fall well below it due to urban density and infrastructure.
+- This approach enables stakeholders to **spot outliers instantly** and prioritize deeper investigation or logistics cost optimization in high-cost regions.
+
+[🧾 View SQL Query](sql_queries/freight_vs_price_by_state.sql)  
+[📄 View CSV Output](sql_results/freight_vs_price_by_state.csv)
+
+### 🎯 6. Are We Hitting Our Core Performance Targets?
 
 
-### 5. Freight Cost vs Product Price
-> **Are there any red flags in freight costs or order size trends?**
-- Built a scatterplot showing the relationship between product price and freight cost per state.
-- Added an efficiency ceiling to call out states where freight cost is over 20% of the average product price. 
-```sql
-SELECT 
-  c.customer_state,
-  ROUND(AVG(oi.price), 2) AS avg_product_price,
-  ROUND(AVG(oi.freight_value), 2) AS avg_freight_cost,
-  ROUND(AVG(oi.freight_value) / NULLIF(AVG(oi.price), 0) * 100, 2) AS freight_pct_of_price
-FROM orders o
-JOIN customers c ON o.customer_id = c.customer_id
-JOIN order_items oi ON o.order_id = oi.order_id
-WHERE o.order_status = 'delivered'
-  AND o.order_purchase_timestamp >= '2017-01-01'
-GROUP BY c.customer_state
-ORDER BY freight_pct_of_price DESC;
-```
-[📄 View CSV Output](sql_results_csv\freight_vs_price_by_state.csv)
+- **Total Revenue and Orders** confirm strong marketplace activity with nearly 100,000 fulfilled orders.
+- **Unique Customers** show wide market reach, while a low **Repeat Purchase Rate (~3%)** points to a potential growth opportunity in retention or loyalty programs.
+- **Weighted Avg Delivery Time (~13 days)** is well below the estimated delivery window across all states, indicating strong logistics execution.
+- **Avg Order Value** and **Avg Freight Cost Per Order** help gauge margins and efficiency. When combined with the freight scatterplot, these KPIs help flag cost inefficiencies in more remote states.
 
+## ⚠️ Caveats & Limitations
 
-### 6. One-Time vs Repeat Customers
-> **What percent of our customers are repeat buyers?**
-- Pie chart showing customer breakdown: ~97% one-time, ~3% repeat.
-```sql
-SELECT 
-  CASE 
-    WHEN order_count = 1 THEN 'One-Time'
-    ELSE 'Repeat'
-  END AS customer_type,
-  COUNT(*) AS customer_count
-FROM (
-  SELECT c.customer_unique_id, COUNT(DISTINCT o.order_id) AS order_count
-  FROM orders o
-  JOIN customers c ON o.customer_id = c.customer_id
-  WHERE o.order_status = 'delivered'
-    AND o.order_purchase_timestamp >= '2017-01-01'
-  GROUP BY c.customer_unique_id
-) sub
-GROUP BY customer_type;
-```
-[📄 View CSV Output](sql_results_csv\repeat_vs_onetime.csv)
-
-
-### 7. KPI Banner
-
-A high-level summary of key business metrics to quickly assess marketplace performance:
-
-- Total Revenue (BRL & USD)
-- Total Orders
-- Total Unique Customers
-- Repeat Purchase Rate (%)
-- Avg Delivery Time (days)
-- Avg Freight Cost Per Order
+- **Freight Cost Interpretation**: Freight data is broken down by order and state but not by package weight or delivery distance. For example, Roraima (RR) shows high average freight % due to its remote location, unlike São Paulo (SP), which benefits from better infrastructure.
+- **Marketplace-Specific**: This dataset only covers the Olist platform and may not reflect behavior on other marketplaces.
+- **Static Aggregations**: Tableau visuals rely on pre-aggregated SQL output. Averages are weighted in SQL when needed, but dynamic filtering is limited.
 
 ## 🔧 Challenges & Lessons Learned
 
-- Learned how to structure a SQL-to-Tableau pipeline using intermediate CSV outputs.
-- Worked through PostgreSQL table imports, relationships, and joins.
-- Created custom calculated fields for tooltips and currency conversion.
-- Designed layout containers in Tableau for a clean, mobile-responsive dashboard.
-
-
+- Developed a streamlined SQL-to-Tableau workflow using intermediate CSV exports.
+- Built efficient queries to support static Tableau inputs, optimizing for performance and clarity.
+- Created custom fields in Tableau for currency formatting, tooltips, and derived KPIs.
+- Strengthened understanding of SQL joins and relational data modeling with real-world schema.
+- Gained experience designing dashboards that balance visual clarity with analytical depth.
 
 ## ✍️ Author
+
 **James Gifford**  
 Data Analyst  
 [LinkedIn](https://www.linkedin.com/in/jamesgifford5/) • [Tableau Public](https://public.tableau.com/app/profile/james.gifford/vizzes)

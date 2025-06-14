@@ -81,10 +81,10 @@ The Olist dataset is available on [Kaggle](https://www.kaggle.com/datasets/olist
 [🧾 View SQL Query](sql_queries/delivery_time_by_state.sql)  
 [📄 View CSV Output](sql_results/delivery_by_state.csv)
 
-### 🚚 5. Are There Any Red Flags in Freight Costs or Order Size Trends?
+### 🚚 5. Are There Any Red Flags in Freight Costs or Product Pricing Trends?
 
-- Built a scatterplot comparing the **average product price** vs. **average freight cost** by state.
-- Calculated **freight as a percentage of product price** to normalize differences in order value across regions.
+- Built a scatterplot comparing average product price and average freight cost by state.
+- Calculated freight as a percentage of product price to normalize for pricing differences across regions.
 - Introduced a visual **efficiency ceiling at 20%**, meaning any state with freight costs regularly exceeding 20% of product price is flagged as potentially inefficient.
 - This threshold helps quickly identify regions where logistics may be eroding margins or affecting customer satisfaction.
 - For example, remote states like Roraima (RR) and Acre (AC) exceed the threshold, reflecting high delivery challenges, while São Paulo (SP) and Rio de Janeiro (RJ) fall well below it due to urban density and infrastructure.
@@ -99,7 +99,8 @@ The Olist dataset is available on [Kaggle](https://www.kaggle.com/datasets/olist
 - **Total Revenue and Orders** confirm strong marketplace activity with nearly 100,000 fulfilled orders.
 - **Unique Customers** show wide market reach, while a low **Repeat Purchase Rate (~3%)** points to a potential growth opportunity in retention or loyalty programs.
 - **Weighted Avg Delivery Time (~13 days)** is well below the estimated delivery window across all states, indicating strong logistics execution.
-- **Avg Order Value** and **Avg Freight Cost Per Order** help gauge margins and efficiency. When combined with the freight scatterplot, these KPIs help flag cost inefficiencies in more remote states.
+- **Avg Order Value** and **Avg Freight Cost Per Order** help gauge margins and efficiency. When combined with the freight scatterplot, these KPIs highlight cost challenges in more remote regions.
+
 
 ## ⚠️ Caveats & Limitations
 
@@ -109,11 +110,14 @@ The Olist dataset is available on [Kaggle](https://www.kaggle.com/datasets/olist
 
 ## 🔧 Challenges & Lessons Learned
 
-- Developed a streamlined SQL-to-Tableau workflow using intermediate CSV exports.
-- Built efficient queries to support static Tableau inputs, optimizing for performance and clarity.
-- Created custom fields in Tableau for currency formatting, tooltips, and derived KPIs.
-- Strengthened understanding of SQL joins and relational data modeling with real-world schema.
-- Gained experience designing dashboards that balance visual clarity with analytical depth.
+- Discovered how delivery performance and freight cost vary dramatically across Brazil’s diverse regions—and how to reflect that nuance in a dashboard.
+- Learned to calculate and compare weighted vs. unweighted averages, especially when visualizing state-level KPIs.
+- Recognized when certain analyses added little business value and removed them to improve dashboard clarity and focus.- Designed a freight efficiency benchmark (“20% ceiling”) to help identify underperforming regions at a glance.
+- Balanced technical detail (SQL logic, data caveats) with accessibility for non-technical viewers through concise tooltips and reference lines.
+- Practiced aligning visual semantics (e.g., map color gradients) to user intuition—dark blue always signals “good.”
+- Built a repeatable project structure with organized query folders, outputs, and clear documentation for each insight.
+
+
 
 ## ✍️ Author
 

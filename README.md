@@ -117,7 +117,14 @@ The Olist dataset is available on [Kaggle](https://www.kaggle.com/datasets/olist
 - Practiced aligning visual semantics (e.g., map color gradients) to user intuition—dark blue always signals “good.”
 - Built a repeatable project structure with organized query folders, outputs, and clear documentation for each insight.
 
+## 🧭 Opportunities for Further Exploration  
+This project focused on core commerce tables but left several areas unexplored. Future analysis could include:
 
+- **Product Category Trends**: Analyze sales, reviews, and returns by category to optimize inventory or marketing.
+- **Customer Reviews**: Correlate review scores with delivery time, product pricing, or freight costs.
+- **Payment Behavior**: Explore payment methods and installment patterns to inform financial strategy.
+- **Geographic Logistics**: Use geolocation data to study delivery routes, regional delivery time, and cost variability.
+- **Seller Performance**: Evaluate metrics like fulfillment speed, customer satisfaction, and return rates across sellers.
 
 ## ✍️ Author
 

@@ -1,5 +1,7 @@
 # Brazil E-Commerce Performance Dashboard (2017–2018)
 
+This project analyzes Brazil's e-commerce activity using public data from the Olist marketplace. The goal was to uncover insights into customer behavior, revenue performance, logistics trends, and repeat purchasing. This project uses SQL and Tableau to replicate the workflow of a real-world business intelligence process.
+
 📊 **Interactive Tableau Dashboard**: [View Live Dashboard](https://public.tableau.com/views/OlistEcommerceDataProject/BrazilE-CommercePerformanceDashboard20172018?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link)
 
 [![Tableau Dashboard Preview](assets/tableau_dashboard_preview.gif)](https://public.tableau.com/views/OlistEcommerceDataProject/BrazilE-CommercePerformanceDashboard20172018?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link)
@@ -9,9 +11,6 @@
 - Just 3% of customers make repeat purchases, highlighting a potential retention issue despite fast delivery.
 - The weighted average delivery time is 13 days, consistently faster than the estimated delivery window.
 - Freight costs in remote states like Roraima (RR) average 27.8% of product value, exceeding the 20% threshold used to identify logistical concerns.
-## 🔍 Overview
-
-This project analyzes Brazil's e-commerce activity using public data from the Olist marketplace. The goal was to uncover insights into customer behavior, revenue performance, logistics trends, and repeat purchasing. I used SQL and Tableau to simulate the workflow of a real-world business intelligence project.
 
 ## 🗂️ Folder Structure
 

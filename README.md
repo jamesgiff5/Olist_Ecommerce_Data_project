@@ -2,7 +2,7 @@
 
 📊 **Interactive Tableau Dashboard**: [View Live Dashboard](https://public.tableau.com/views/OlistEcommerceDataProject/BrazilE-CommercePerformanceDashboard20172018?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link)
 
-[![Tableau Dashboard Preview](assets/tableau_dashboard_preview.png)](https://public.tableau.com/views/OlistEcommerceDataProject/BrazilE-CommercePerformanceDashboard20172018?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link)
+[![Tableau Dashboard Preview](assets/tableau_dashboard_preview.gif)](https://public.tableau.com/views/OlistEcommerceDataProject/BrazilE-CommercePerformanceDashboard20172018?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link)
 ## 🧠 Executive Summary
 
 - São Paulo accounts for approximately 37% of total revenue and has the most efficient logistics with the lowest freight percentage.

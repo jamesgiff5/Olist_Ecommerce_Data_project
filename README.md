@@ -74,7 +74,7 @@ The Olist dataset is available on [Kaggle](https://www.kaggle.com/datasets/olist
 - Measured the average number of days from purchase to delivery for each state.
 - Compared actual delivery times to the estimated delivery dates provided with each order.
 - Results show that **every state had an average delivery time earlier than expected**, meaning the company consistently exceeded delivery expectations.
-- For example, states like São Paulo (SP) had the fastest delivery times (~9 days), while remote regions like Roraima (RR) averaged closer to 30 days — yet still beat the estimated delivery date by over 15 days.
+- For example, states like São Paulo (SP) had the fastest delivery times (~9 days), while remote regions like Roraima (RR) averaged closer to 30 days, yet still beat the estimated delivery date by over 15 days.
 - Detailed comparisons are visible via tooltips on the dashboard’s bar chart.
 
 [🧾 View SQL Query](sql_queries/delivery_time_by_state.sql)  
@@ -100,6 +100,10 @@ The Olist dataset is available on [Kaggle](https://www.kaggle.com/datasets/olist
 - **Weighted Avg Delivery Time (~13 days)** is well below the estimated delivery window across all states, indicating strong logistics execution.
 - **Avg Order Value** and **Avg Freight Cost Per Order** help gauge margins and efficiency. When combined with the freight scatterplot, these KPIs highlight cost challenges in more remote regions.
 
+## 💡 Conclusion & Key Takeaways
+
+This project revealed how regional differences in Brazil impact e-commerce performance, from freight costs to delivery times to repeat purchase behavior. São Paulo consistently led in both revenue and logistics efficiency, while more remote states like Roraima exposed the challenges of costly fulfillment. Despite strong delivery performance overall, the low repeat purchase rate highlights a missed opportunity in customer retention. By surfacing these patterns through SQL and Tableau, this project shows how data can guide decisions on where to improve margins, reallocate marketing efforts, and tailor operations by geography.
+
 
 ## ⚠️ Caveats & Limitations
 
@@ -109,12 +113,12 @@ The Olist dataset is available on [Kaggle](https://www.kaggle.com/datasets/olist
 
 ## 🔧 Challenges & Lessons Learned
 
-- Discovered how delivery performance and freight cost vary dramatically across Brazil’s diverse regions—and how to reflect that nuance in a dashboard.
-- Learned to calculate and compare weighted vs. unweighted averages, especially when visualizing state-level KPIs.
-- Recognized when certain analyses added little business value and removed them to improve dashboard clarity and focus.- Designed a freight efficiency benchmark (“20% ceiling”) to help identify underperforming regions at a glance.
-- Balanced technical detail (SQL logic, data caveats) with accessibility for non-technical viewers through concise tooltips and reference lines.
-- Practiced aligning visual semantics (e.g., map color gradients) to user intuition—dark blue always signals “good.”
-- Built a repeatable project structure with organized query folders, outputs, and clear documentation for each insight.
+- Learned how to identify performance benchmarks like freight efficiency ceilings and apply them to uncover hidden cost issues.
+- Balanced technical accuracy (e.g., weighted averages, freight normalization) with dashboard clarity and usability.
+- Refined the scope of analysis by removing low-impact visuals, improving storytelling and focus.
+- Practiced aligning visual design with user intuition, for example, using map color gradients to highlight state performance.
+- Developed a repeatable project structure with organized queries, clean outputs, and documented insights for every chart.
+
 
 ## 🧭 Opportunities for Further Exploration  
 This project focused on core commerce tables but left several areas unexplored. Future analysis could include:
